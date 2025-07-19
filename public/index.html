@@ -1,42 +1,132 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Turkish Express</title>
   <style>
-    * { box-sizing: border-box; font-family: "Times New Roman", serif; }
-    body { margin: 0; padding: 20px; background: #f4f4f4; }
-    h2, h3 { color: #003366; text-align: center; }
-    input, button {
-      width: 100%; padding: 10px; margin: 5px 0;
-      border: 1px solid #ccc; border-radius: 5px;
+    * {
+      box-sizing: border-box;
+      font-family: "Times New Roman", serif;
     }
-    button { background: #003366; color: white; font-weight: bold; }
-    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-    #dashboard { display: none; }
-    @media (max-width: 500px) {
-      .container { width: 90%; padding: 15px; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #000; /* Siyah arka plan */
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    h1.logo {
+      color: #FFD700; /* Altın */
+      font-size: 2.8rem;
+      text-align: center;
+      margin: 0;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+    .subtitle {
+      color: #FFD700;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+    input {
+      background: #222;
+      color: white;
+    }
+    button {
+      background: #FFD700;
+      color: black;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      border: none;
+    }
+    button:hover {
+      background: #e6c200;
+    }
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #111;
+      padding: 25px 30px;
+      border-radius: 12px;
+      flex-grow: 1;
+    }
+    #dashboard {
+      display: none;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 14px;
+      max-height: 160px;
+      overflow-y: auto;
+      margin-top: 10px;
+      border-top: 1px solid #444;
+      padding-top: 8px;
+    }
+    ul li {
+      margin-bottom: 6px;
+    }
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      padding: 18px 0 6px;
+      user-select: none;
+    }
+    #status, #cardInfo {
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #FFD700;
+      user-select: none;
+    }
+    #cardInfo {
+      font-weight: 700;
+      font-style: normal;
+    }
+    @media (max-width: 480px) {
+      .container {
+        width: 90%;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>💳 Turkish Express</h2>
+    <h1 class="logo">Turkish Express</h1>
+    <div class="subtitle">Altınd TBL Resmi Sponsoru</div>
 
     <div id="register">
       <h3>Kart Talep Et</h3>
-      <input id="reg-name" placeholder="İsim">
-      <input id="reg-pin" placeholder="4 Haneli Şifre" maxlength="4">
-      <button onclick="requestCard()">Kart Oluştur</button>
-      <p id="reg-result"></p>
+      <input id="reg-name" placeholder="İsim" autocomplete="off" />
+      <input id="reg-pin" placeholder="4 Haneli Şifre" maxlength="4" autocomplete="off" />
+      <button id="requestCardBtn">Kart Oluştur</button>
+      <div id="status" style="display:none;">Sayılar Bulunuyor...</div>
+      <div id="cardInfo" style="display:none;"></div>
     </div>
 
-    <div id="login">
+    <div id="login" style="margin-top: 30px;">
       <h3>Giriş Yap</h3>
-      <input id="login-card" placeholder="Kart Numarası">
-      <input id="login-pin" placeholder="Şifre" maxlength="4">
-      <button onclick="login()">Giriş</button>
-      <p id="login-result"></p>
+      <input id="login-card" placeholder="Kart Numarası" autocomplete="off" />
+      <input id="login-pin" placeholder="Şifre" maxlength="4" autocomplete="off" />
+      <button id="loginBtn">Giriş</button>
+      <p id="login-result" style="color:#f33;"></p>
     </div>
 
     <div id="dashboard">
@@ -44,76 +134,188 @@
       <p>💰 Bakiye: <span id="user-balance"></span>₺</p>
 
       <h4>💸 Para Gönder</h4>
-      <input id="to-card" placeholder="Alıcının Kart Numarası">
-      <input id="send-amount" placeholder="Tutar">
-      <button onclick="sendMoney()">Gönder</button>
-      <p id="send-result"></p>
+      <input id="to-username" placeholder="Alıcının Kullanıcı Adı" autocomplete="off" />
+      <input id="send-amount" placeholder="Tutar" type="number" min="1" />
+      <button id="sendMoneyBtn">Gönder</button>
+      <p id="send-result" style="color:#f33;"></p>
 
       <h4>📜 İşlem Geçmişi</h4>
       <ul id="history-list"></ul>
     </div>
   </div>
 
+  <footer>© 2025 Turkish Express – Tüm Hakları Saklıdır.</footer>
+
   <script>
+    const requestCardBtn = document.getElementById("requestCardBtn");
+    const loginBtn = document.getElementById("loginBtn");
+    const sendMoneyBtn = document.getElementById("sendMoneyBtn");
+
+    const statusDiv = document.getElementById("status");
+    const cardInfoDiv = document.getElementById("cardInfo");
+    const loginResult = document.getElementById("login-result");
+    const sendResult = document.getElementById("send-result");
+
     let currentCard = "";
+    let currentUsername = "";
 
-    async function requestCard() {
-      const name = document.getElementById("reg-name").value;
-      const pin = document.getElementById("reg-pin").value;
-      const res = await fetch("/api/request-card", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, pin })
-      });
-      const data = await res.json();
-      document.getElementById("reg-result").innerText = data.success
-        ? `🎉 Kart Numaran: ${data.cardNumber}`
-        : `❌ ${data.error}`;
-    }
+    // Kart talep et - 5 saniyelik animasyon ve kart numarası gösterimi
+    requestCardBtn.addEventListener("click", () => {
+      const name = document.getElementById("reg-name").value.trim();
+      const pin = document.getElementById("reg-pin").value.trim();
 
-    async function login() {
-      const cardNumber = document.getElementById("login-card").value;
-      const pin = document.getElementById("login-pin").value;
-      const res = await fetch("/api/login", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardNumber, pin })
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        currentCard = data.cardNumber;
-        document.getElementById("register").style.display = "none";
-        document.getElementById("login").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        document.getElementById("user-name").innerText = data.name;
-        document.getElementById("user-balance").innerText = data.balance;
-        renderHistory(data.history);
-      } else {
-        document.getElementById("login-result").innerText = `❌ ${data.error}`;
+      if (!name || pin.length !== 4) {
+        alert("Lütfen isim ve 4 haneli şifre girin.");
+        return;
       }
-    }
 
-    async function sendMoney() {
-      const toCard = document.getElementById("to-card").value;
-      const amount = document.getElementById("send-amount").value;
+      requestCardBtn.disabled = true;
+      statusDiv.style.display = "block";
+      cardInfoDiv.style.display = "none";
+      cardInfoDiv.textContent = "";
+      let steps = [
+        "Sayılar Bulunuyor...",
+        "Veritabanıyla Eşleşiyor...",
+        "Kullanıcı Oluşturuluyor..."
+      ];
+      let stepIndex = 0;
 
-      const res = await fetch("/api/send-money", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fromCard: currentCard, toCard, amount })
-      });
-      const data = await res.json();
-      document.getElementById("send-result").innerText = data.success
-        ? "✅ Para gönderildi"
-        : `❌ ${data.error}`;
-    }
+      const interval = setInterval(() => {
+        statusDiv.textContent = steps[stepIndex];
+        stepIndex++;
+        if (stepIndex >= steps.length) {
+          clearInterval(interval);
+          fetch("/api/request-card", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, pin })
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                statusDiv.style.display = "none";
+                cardInfoDiv.style.display = "block";
+                cardInfoDiv.textContent = `🎉 Kart Numaran: ${data.cardNumber}`;
+              } else {
+                statusDiv.style.display = "none";
+                cardInfoDiv.style.display = "block";
+                cardInfoDiv.textContent = `❌ ${data.error}`;
+              }
+              requestCardBtn.disabled = false;
+            })
+            .catch(() => {
+              statusDiv.style.display = "none";
+              cardInfoDiv.style.display = "block";
+              cardInfoDiv.textContent = "❌ Sunucu hatası.";
+              requestCardBtn.disabled = false;
+            });
+        }
+      }, 1700);
+    });
 
+    // Giriş
+    loginBtn.addEventListener("click", () => {
+      const cardNumber = document.getElementById("login-card").value.trim();
+      const pin = document.getElementById("login-pin").value.trim();
+      if (!cardNumber || pin.length !== 4) {
+        loginResult.textContent = "Kart numarası ve 4 haneli şifre gerekli.";
+        return;
+      }
+      loginResult.textContent = "";
+
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardNumber, pin })
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            if (data.admin) {
+              // Admin ise admin paneline yönlendir
+              window.location.href = "/admin";
+              return;
+            }
+
+            currentCard = data.cardNumber;
+            currentUsername = data.name;
+            document.getElementById("register").style.display = "none";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("dashboard").style.display = "block";
+            document.getElementById("user-name").textContent = currentUsername;
+            document.getElementById("user-balance").textContent = data.balance;
+            renderHistory(data.history);
+          } else {
+            loginResult.textContent = data.error || "Hata oluştu.";
+          }
+        })
+        .catch(() => {
+          loginResult.textContent = "Sunucu ile bağlantı kurulamadı.";
+        });
+    });
+
+    // Para gönderme - kullanıcı adı ile
+    sendMoneyBtn.addEventListener("click", () => {
+      const toUsername = document.getElementById("to-username").value.trim();
+      const amount = parseFloat(document.getElementById("send-amount").value);
+      sendResult.style.color = "#f33";
+      sendResult.textContent = "";
+
+      if (!toUsername) {
+        sendResult.textContent = "Alıcının kullanıcı adını girin.";
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        sendResult.textContent = "Geçerli bir tutar girin.";
+        return;
+      }
+
+      fetch("/api/send-money-by-name", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fromCard: currentCard,
+          toUsername,
+          amount,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            sendResult.style.color = "limegreen";
+            sendResult.textContent = "✅ Para gönderildi.";
+            document.getElementById("user-balance").textContent = data.newBalance;
+            renderHistory(data.history);
+            document.getElementById("to-username").value = "";
+            document.getElementById("send-amount").value = "";
+          } else {
+            sendResult.textContent = data.error || "Gönderme hatası.";
+          }
+        })
+        .catch(() => {
+          sendResult.textContent = "Sunucu hatası.";
+        });
+    });
+
+    // İşlem geçmişini göster
     function renderHistory(history) {
       const list = document.getElementById("history-list");
       list.innerHTML = "";
-      history.slice().reverse().forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.date} | ${item.type} ${item.amount}₺ → ${item.to || item.from}`;
-        list.appendChild(li);
-      });
+      if (!history || history.length === 0) {
+        list.innerHTML = "<li>İşlem geçmişi yok.</li>";
+        return;
+      }
+      history
+        .slice()
+        .reverse()
+        .forEach((item) => {
+          let txt = `${item.date} | ${item.type} ${item.amount}₺`;
+          if (item.to) txt += ` → ${item.to}`;
+          else if (item.from) txt += ` ← ${item.from}`;
+          const li = document.createElement("li");
+          li.textContent = txt;
+          list.appendChild(li);
+        });
     }
   </script>
 </body>

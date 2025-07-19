@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Turkish Express - Admin Panel</title>
+<style>
+  body {
+    background: #000;
+    color: white;
+    font-family: "Times New Roman", serif;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    color: #FFD700;
+    text-align: center;
+    user-select: none;
+  }
+  #usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  #usersTable th, #usersTable td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+  }
+  #usersTable th {
+    background: #222;
+  }
+  button {
+    cursor: pointer;
+    background: #FFD700;
+    color: black;
+    border: none;
+    padding: 5px 8px;
+    margin: 2px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #e6c200;
+  }
+  .history-row {
+    background: #111;
+    font-size: 0.9rem;
+  }
+  .history-cell {
+    padding-left: 30px;
+    color: #ccc;
+    font-family: monospace;
+  }
+  #alertBox {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #ffd700aa;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(100%);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 9999;
+    min-width: 250px;
+  }
+  #alertBox.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+  #alertBox.success {
+    background: #4caf50;
+  }
+  #alertBox.error {
+    background: #f44336;
+  }
+</style>
+</head>
+<body>
+
+<h1>Admin Paneli - Turkish Express</h1>
+
+<table id="usersTable">
+  <thead>
+    <tr>
+      <th>İsim</th>
+      <th>Kart Numarası</th>
+      <th>Bakiye (₺)</th>
+      <th>Durum</th>
+      <th>İşlemler</th>
+    </tr>
+  </thead>
+  <tbody id="usersBody"></tbody>
+</table>
+
+<div id="alertBox"></div>
+
+<script>
+const alertBox = document.getElementById("alertBox");
+
+function showAlert(message, type = "success", duration = 3500) {
+  alertBox.textContent = message;
+  alertBox.className = "";
+  alertBox.classList.add(type === "error" ? "error" : "success", "show");
+  setTimeout(() => alertBox.classList.remove("show"), duration);
+}
+
+async function fetchUsers() {
+  try {
+    const res = await fetch("/api/users");
+    const users = await res.json();
+    renderUsers(users);
+  } catch {
+    showAlert("Kullanıcılar alınamadı!", "error");
+  }
+}
+
+function renderUsers(users) {
+  const tbody = document.getElementById("usersBody");
+  tbody.innerHTML = "";
+
+  users.forEach(user => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.cardNumber}</td>
+      <td>${user.balance.toFixed(2)}</td>
+      <td>${user.frozen ? "❄️ Dondurulmuş" : "🟢 Aktif"}</td>
+      <td>
+        <button onclick="resetBalance('${user.cardNumber}')">Sıfırla</button>
+        <button onclick="addBalance('${user.cardNumber}')">+Bakiye</button>
+        <button onclick="toggleFreeze('${user.cardNumber}', ${user.frozen})">${user.frozen ? "Aktif Et" : "Dondur"}</button>
+        <button onclick="deleteUser('${user.cardNumber}')">Sil</button>
+        <button onclick="toggleHistory(this, '${user.cardNumber}')">Geçmiş</button>
+      </td>
+    `;
+
+    const historyTr = document.createElement("tr");
+    historyTr.classList.add("history-row");
+    historyTr.style.display = "none";
+    historyTr.innerHTML = `<td colspan="5" class="history-cell">Yükleniyor...</td>`;
+
+    tbody.appendChild(tr);
+    tbody.appendChild(historyTr);
+  });
+}
+
+async function resetBalance(cardNumber) {
+  if (!confirm("Bakiyeyi sıfırlamak istiyor musunuz?")) return;
+  const res = await fetch("/api/admin/reset-balance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardNumber })
+  });
+  const data = await res.json();
+  if (data.success) {
+    showAlert("Bakiye sıfırlandı.");
+    fetchUsers();
+  } else {
+    showAlert(data.error || "Sıfırlama hatası", "error");
+  }
+}
+
+async function addBalance(cardNumber) {
+  const amount = prompt("Eklenecek tutarı girin:");
+  if (!amount || isNaN(amount) || amount <= 0) return showAlert("Geçersiz tutar", "error");
+
+  const res = await fetch("/api/admin/add-balance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardNumber, amount: parseFloat(amount) })
+  });
+  const data = await res.json();
+  if (data.success) {
+    showAlert("Bakiye eklendi.");
+    fetchUsers();
+  } else {
+    showAlert(data.error || "Ekleme hatası", "error");
+  }
+}
+
+async function toggleFreeze(cardNumber, frozen) {
+  const res = await fetch("/api/admin/toggle-freeze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardNumber, frozen: !frozen })
+  });
+  const data = await res.json();
+  if (data.success) {
+    showAlert(frozen ? "Hesap aktifleştirildi." : "Hesap donduruldu.");
+    fetchUsers();
+  } else {
+    showAlert(data.error || "İşlem hatası", "error");
+  }
+}
+
+async function deleteUser(cardNumber) {
+  if (!confirm("Bu kullanıcıyı silmek istiyor musunuz?")) return;
+  const res = await fetch("/api/admin/delete-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cardNumber })
+  });
+  const data = await res.json();
+  if (data.success) {
+    showAlert("Kullanıcı silindi.");
+    fetchUsers();
+  } else {
+    showAlert(data.error || "Silme hatası", "error");
+  }
+}
+
+async function toggleHistory(btn, cardNumber) {
+  const tr = btn.parentElement.parentElement;
+  const nextTr = tr.nextElementSibling;
+  const cell = nextTr.querySelector(".history-cell");
+
+  if (nextTr.style.display === "table-row") {
+    nextTr.style.display = "none";
+    return;
+  }
+
+  nextTr.style.display = "table-row";
+  cell.textContent = "Yükleniyor...";
+
+  try {
+    const res = await fetch("/api/admin/user-history", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cardNumber })
+    });
+    const data = await res.json();
+    if (!data.history || data.history.length === 0) {
+      cell.innerHTML = "<i>İşlem bulunamadı.</i>";
+      return;
+    }
+    const html = data.history.map(tx => {
+      return `<div>${tx.date} - ${tx.type} ${tx.amount}₺ ${tx.to ? `→ ${tx.to}` : tx.from ? `← ${tx.from}` : ""}</div>`;
+    }).join("");
+    cell.innerHTML = html;
+  } catch {
+    cell.textContent = "İşlem alınamadı.";
+  }
+}
+
+fetchUsers();
+</script>
+
+</body>
+</html>
