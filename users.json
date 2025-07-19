@@ -1,25 +1,16 @@
 [
   {
     "name": "Akın",
-    "cardNumber": "573762316",
-    "pin": "2928",
+    "cardNumber": "193827459",
+    "pin": "3829",
     "balance": 0,
     "frozen": false
   },
-  {
-    "name": "AKIN",
-    "cardNumber": "113173930",
-    "pin": "2345",
-    "balance": 0,
-    "frozen": false
-  }
-  {
+  
+  { 
     "name": "Admin",
     "cardNumber": "000000001",
     "pin": "4829",
     "balance": 0,
     "frozen": false
-  }
-    
-
 ]
