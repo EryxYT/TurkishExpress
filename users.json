@@ -33,7 +33,7 @@
     "cardNumber": "458631487",
     "pin": "1234",
     "password": "1234",
-    "balance": 0,
+    "balance": 500000,
     "frozen": false,
     "ip": "151.135.131.91",
     "createdAt": "20.07.2025 23:55:25",
