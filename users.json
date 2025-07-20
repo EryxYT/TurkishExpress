@@ -27,5 +27,16 @@
     "ip": "217.131.118.197",
     "createdAt": "19.07.2025 23:06:36",
     "mode": "dark"
+  },
+  {
+    "name": "Miraç",
+    "cardNumber": "458631487",
+    "pin": "1234",
+    "password": "1234",
+    "balance": 0,
+    "frozen": false,
+    "ip": "151.135.131.91",
+    "createdAt": "20.07.2025 23:55:25",
+    "mode": "dark"
   }
 ]

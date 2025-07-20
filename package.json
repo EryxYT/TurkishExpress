@@ -4,7 +4,7 @@
   "description": "Sanal banka sistemi - Turkish Express",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node public/server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
