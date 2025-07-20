@@ -12,9 +12,9 @@
     "cardNumber": "950549637",
     "pin": "3169",
     "password": "3169",
-    "balance": 12100.25,
+    "balance": 12300.25,
     "frozen": false,
-    "ip": "217.131.119.172",
+    "ip": "217.131.118.197",
     "createdAt": "19.07.2025 23:03:33"
   },
   {
@@ -22,9 +22,10 @@
     "cardNumber": "795646805",
     "pin": "2612",
     "password": "2612",
-    "balance": 187899.75,
+    "balance": 187699.75,
     "frozen": false,
     "ip": "217.131.118.197",
-    "createdAt": "19.07.2025 23:06:36"
+    "createdAt": "19.07.2025 23:06:36",
+    "mode": "dark"
   }
 ]

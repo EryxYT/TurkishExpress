@@ -327,7 +327,7 @@
 
     let currentCard = "";
     let currentUsername = "";
-    let nameChangeCount = 0;
+    let nameChangeCount = 0;  // frontend'de tutuluyor, backend yok şu an
     let currentTheme = "dark"; // default tema
 
     // Tema ayarlarını body attribute ile uygula ve butonu güncelle
@@ -335,14 +335,6 @@
       currentTheme = theme;
       document.body.setAttribute("data-theme", theme);
       updateMorningModeToggle();
-      // Eğer backend'e kaydetmek istersen buraya fetch ekleyebilirsin
-      /*
-      fetch("/api/set-theme", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ cardNumber: currentCard, theme }),
-      });
-      */
     }
 
     function updateMorningModeToggle() {
@@ -357,7 +349,7 @@
       }
     }
 
-    // Kart talep et - animasyon ve kart numarası gösterimi
+    // Kart talep etme animasyonu ve API çağrısı
     requestCardBtn.addEventListener("click", () => {
       const name = document.getElementById("reg-name").value.trim();
       const pin = document.getElementById("reg-pin").value.trim();
@@ -435,9 +427,10 @@
             }
             currentCard = data.cardNumber;
             currentUsername = data.name;
-            nameChangeCount = data.nameChangeCount || 0;
-            // Eğer backendden tema bilgisi gelirse onu uygula, yoksa default
-            setTheme(data.theme || "dark");
+            // Backend'den "mode" alanını alıyoruz tema için
+            setTheme(data.mode || "dark");
+            // nameChangeCount backend yok, frontend sıfırla veya backend eklersen güncelle
+            nameChangeCount = 0;
 
             document.getElementById("register").style.display = "none";
             document.getElementById("login").style.display = "none";
@@ -472,11 +465,12 @@
 
     // Para gönderme
     sendMoneyBtn.addEventListener("click", () => {
-      const toUser = document.getElementById("to-username").value.trim();
+      const toUsername = document.getElementById("to-username").value.trim();
       const amount = Number(document.getElementById("send-amount").value);
       const note = document.getElementById("send-note").value.trim();
 
-      if (!toUser || isNaN(amount) || amount < 1) {
+      if (!toUsername || isNaN(amount) || amount < 1) {
+        sendResult.style.color = "#f33";
         sendResult.textContent = "Geçerli alıcı ve tutar giriniz.";
         return;
       }
@@ -484,12 +478,12 @@
 
       sendMoneyBtn.disabled = true;
 
-      fetch("/api/send-money", {
+      fetch("/api/send-money-by-name", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fromCard: currentCard,
-          toUser,
+          toUsername,
           amount,
           note,
         }),
@@ -523,14 +517,17 @@
       updateResult.textContent = "";
 
       if (newName && nameChangeCount >= 2) {
+        updateResult.style.color = "#f33";
         updateResult.textContent = "İsim değiştirme hakkınız kalmadı.";
         return;
       }
       if (newPin && newPin.length !== 4) {
+        updateResult.style.color = "#f33";
         updateResult.textContent = "Yeni şifre 4 haneli olmalı.";
         return;
       }
       if (newPin && newPin !== confirmPin) {
+        updateResult.style.color = "#f33";
         updateResult.textContent = "Şifreler uyuşmuyor.";
         return;
       }
@@ -556,6 +553,11 @@
               nameChangeCount++;
               updateUserInfoDisplay();
               updateNameChangeUI();
+              document.getElementById("new-name").value = "";
+            }
+            if(newPin){
+              document.getElementById("new-pin").value = "";
+              document.getElementById("confirm-pin").value = "";
             }
           } else {
             updateResult.style.color = "#f33";
@@ -577,7 +579,7 @@
       deleteResult.textContent = "";
       deleteAccountBtn.disabled = true;
 
-      fetch("/api/delete-account", {
+      fetch("/api/delete-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cardNumber: currentCard }),
@@ -598,7 +600,7 @@
         });
     });
 
-    // İşlem geçmişini listele
+    // İşlem geçmişini listele (backend'den gelen format: {type, amount, to/from, date, note})
     function renderHistory(history) {
       const historyList = document.getElementById("history-list");
       historyList.innerHTML = "";
@@ -607,8 +609,19 @@
         return;
       }
       history.forEach((item) => {
+        let desc = "";
+        if(item.type === "GÖNDERİLDİ") {
+          desc = `Gönderildi → ${item.to}`;
+        } else if(item.type === "ALINDI") {
+          desc = `Alındı ← ${item.from}`;
+        } else {
+          desc = item.type;
+        }
+        if(item.note && item.note.trim() !== ""){
+          desc += ` (Not: ${item.note})`;
+        }
         const li = document.createElement("li");
-        li.textContent = `${item.date} - ${item.description} - ${item.amount}₺`;
+        li.textContent = `${item.date} - ${desc} - ${item.amount}₺`;
         historyList.appendChild(li);
       });
     }
@@ -617,8 +630,14 @@
     morningModeToggle.addEventListener("click", () => {
       const newTheme = currentTheme === "dark" ? "light" : "dark";
       setTheme(newTheme);
-    });
 
+      // İstersen buradan backend'e tema kaydetme API çağrısı yapılabilir
+      fetch("/api/set-mode", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ cardNumber: currentCard, mode: newTheme }),
+      }).catch(() => {});
+    });
   </script>
 </body>
 </html>

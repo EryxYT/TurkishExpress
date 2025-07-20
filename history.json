@@ -26,6 +26,13 @@
       "to": "Berra Özata",
       "date": "19.07.2025 23:39:42",
       "note": "Altuğ sana bunu atmazdı oe"
+    },
+    {
+      "type": "GÖNDERİLDİ",
+      "amount": -200,
+      "to": "Berra Özata",
+      "date": "20.07.2025 10:46:42",
+      "note": "uyan artık"
     }
   ],
   "950549637": [
@@ -55,6 +62,13 @@
       "from": "Akın Talha",
       "date": "19.07.2025 23:39:42",
       "note": "Altuğ sana bunu atmazdı oe"
+    },
+    {
+      "type": "ALINDI",
+      "amount": 200,
+      "from": "Akın Talha",
+      "date": "20.07.2025 10:46:42",
+      "note": "uyan artık"
     }
   ]
 }
