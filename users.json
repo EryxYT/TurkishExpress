@@ -1,16 +1,30 @@
 [
   {
-    "name": "Akın",
-    "cardNumber": "193827459",
-    "pin": "3829",
-    "balance": 0,
-    "frozen": false
-  },
-  {
     "name": "Admin",
     "cardNumber": "000000001",
     "pin": "4829",
-    "balance": 0,
-    "frozen": false
+    "balance": 93629,
+    "frozen": false,
+    "ip": "217.131.118.197"
+  },
+  {
+    "name": "Berra Özata",
+    "cardNumber": "950549637",
+    "pin": "3169",
+    "password": "3169",
+    "balance": 12100.25,
+    "frozen": false,
+    "ip": "217.131.119.172",
+    "createdAt": "19.07.2025 23:03:33"
+  },
+  {
+    "name": "Akın Talha",
+    "cardNumber": "795646805",
+    "pin": "2612",
+    "password": "2612",
+    "balance": 187899.75,
+    "frozen": false,
+    "ip": "217.131.118.197",
+    "createdAt": "19.07.2025 23:06:36"
   }
 ]

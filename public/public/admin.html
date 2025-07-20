@@ -1,255 +1,459 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Turkish Express - Admin Panel</title>
-<style>
-  body {
-    background: #000;
-    color: white;
-    font-family: "Times New Roman", serif;
-    margin: 0;
-    padding: 20px;
-  }
-  h1 {
-    color: #FFD700;
-    text-align: center;
-    user-select: none;
-  }
-  #usersTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-  }
-  #usersTable th, #usersTable td {
-    border: 1px solid #444;
-    padding: 8px;
-    text-align: left;
-  }
-  #usersTable th {
-    background: #222;
-  }
-  button {
-    cursor: pointer;
-    background: #FFD700;
-    color: black;
-    border: none;
-    padding: 5px 8px;
-    margin: 2px;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #e6c200;
-  }
-  .history-row {
-    background: #111;
-    font-size: 0.9rem;
-  }
-  .history-cell {
-    padding-left: 30px;
-    color: #ccc;
-    font-family: monospace;
-  }
-  #alertBox {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #333;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px #ffd700aa;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(100%);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    z-index: 9999;
-    min-width: 250px;
-  }
-  #alertBox.show {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0);
-  }
-  #alertBox.success {
-    background: #4caf50;
-  }
-  #alertBox.error {
-    background: #f44336;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Paneli - Turkish Express</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #FFD700;
+      user-select: none;
+      margin-bottom: 20px;
+    }
+    /* Giriş ekranı */
+    #loginSection {
+      background: #222;
+      padding: 25px 30px;
+      border-radius: 10px;
+      width: 320px;
+      box-sizing: border-box;
+    }
+    #loginSection input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      background: #333;
+      color: white;
+    }
+    #loginSection button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #FFD700;
+      color: black;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s ease;
+    }
+    #loginSection button:hover {
+      background: #e6c200;
+    }
+    #loginError {
+      color: #f44336;
+      margin-top: 8px;
+      min-height: 20px;
+      user-select: none;
+      text-align: center;
+    }
+
+    /* Admin panel */
+    #adminPanel {
+      display: none;
+      width: 90%;
+      max-width: 900px;
+    }
+    .back-button {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .back-button button {
+      background: none;
+      border: 2px solid #FFD700;
+      color: #FFD700;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .back-button button:hover {
+      background-color: #FFD700;
+      color: black;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #222;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+    }
+    th {
+      background-color: #333;
+      color: #FFD700;
+    }
+    button.action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-right: 6px;
+      color: white;
+      transition: background 0.3s ease;
+    }
+    button.delete-btn {
+      background-color: #e74c3c;
+    }
+    button.delete-btn:hover {
+      background-color: #c0392b;
+    }
+    button.history-btn {
+      background-color: #3498db;
+    }
+    button.history-btn:hover {
+      background-color: #2980b9;
+    }
+    button.info-btn {
+      background-color: #888;
+    }
+    button.info-btn:hover {
+      background-color: #aaa;
+      color: black;
+    }
+
+    /* Alert kutusu */
+    #alertBox {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #ffd700aa;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(100%);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 9999;
+      min-width: 250px;
+    }
+    #alertBox.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+    #alertBox.success {
+      background: #4caf50;
+    }
+    #alertBox.error {
+      background: #f44336;
+    }
+
+    /* Modal Arka Plan */
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+    /* Modal İçerik */
+    #modal {
+      background: #222;
+      padding: 20px 25px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+      color: white;
+      position: relative;
+    }
+    #modal h2 {
+      margin-top: 0;
+      color: #FFD700;
+      user-select: none;
+    }
+    #modalClose {
+      background: #e74c3c;
+      border: none;
+      padding: 6px 14px;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 101;
+    }
+    #historyList div {
+      padding: 6px 0;
+      border-bottom: 1px solid #444;
+      font-family: monospace;
+      user-select: text;
+    }
+  </style>
 </head>
 <body>
 
 <h1>Admin Paneli - Turkish Express</h1>
 
-<table id="usersTable">
-  <thead>
-    <tr>
-      <th>İsim</th>
-      <th>Kart Numarası</th>
-      <th>Bakiye (₺)</th>
-      <th>Durum</th>
-      <th>İşlemler</th>
-    </tr>
-  </thead>
-  <tbody id="usersBody"></tbody>
-</table>
+<!-- Giriş Formu -->
+<div id="loginSection">
+  <input type="password" id="adminPassword" placeholder="Admin Şifresi" autocomplete="off" />
+  <button id="loginBtn">Giriş Yap</button>
+  <div id="loginError"></div>
+</div>
 
+<!-- Admin Panel -->
+<div id="adminPanel">
+  <div class="back-button">
+    <button onclick="logout()">⬅ Çıkış Yap ve Ana Sayfaya Dön</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>İsim</th>
+        <th>Kart Numarası</th>
+        <th>Bakiye (₺)</th>
+        <th>Durum</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody id="usersBody"></tbody>
+  </table>
+</div>
+
+<!-- Uyarı kutusu -->
 <div id="alertBox"></div>
 
+<!-- Modal -->
+<div id="modalOverlay">
+  <div id="modal">
+    <button id="modalClose">X</button>
+    <h2 id="modalTitle">İşlem Geçmişi</h2>
+    <div id="modalContent">Yükleniyor...</div>
+  </div>
+</div>
+
 <script>
-const alertBox = document.getElementById("alertBox");
+  const alertBox = document.getElementById("alertBox");
+  const loginSection = document.getElementById("loginSection");
+  const adminPanel = document.getElementById("adminPanel");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginError = document.getElementById("loginError");
 
-function showAlert(message, type = "success", duration = 3500) {
-  alertBox.textContent = message;
-  alertBox.className = "";
-  alertBox.classList.add(type === "error" ? "error" : "success", "show");
-  setTimeout(() => alertBox.classList.remove("show"), duration);
-}
+  // Modal elemanları
+  const modalOverlay = document.getElementById("modalOverlay");
+  const modalClose = document.getElementById("modalClose");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalContent = document.getElementById("modalContent");
 
-async function fetchUsers() {
-  try {
-    const res = await fetch("/api/users");
-    const users = await res.json();
-    renderUsers(users);
-  } catch {
-    showAlert("Kullanıcılar alınamadı!", "error");
+  // Basit admin şifresi (buraya kendin değiştirebilirsin)
+  const ADMIN_PASSWORD = "admin123";
+
+  // Alert gösterme fonksiyonu
+  function showAlert(message, type = "success", duration = 3500) {
+    alertBox.textContent = message;
+    alertBox.className = "";
+    alertBox.classList.add(type === "error" ? "error" : "success", "show");
+    setTimeout(() => alertBox.classList.remove("show"), duration);
   }
-}
 
-function renderUsers(users) {
-  const tbody = document.getElementById("usersBody");
-  tbody.innerHTML = "";
-
-  users.forEach(user => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${user.name}</td>
-      <td>${user.cardNumber}</td>
-      <td>${user.balance.toFixed(2)}</td>
-      <td>${user.frozen ? "❄️ Dondurulmuş" : "🟢 Aktif"}</td>
-      <td>
-        <button onclick="resetBalance('${user.cardNumber}')">Sıfırla</button>
-        <button onclick="addBalance('${user.cardNumber}')">+Bakiye</button>
-        <button onclick="toggleFreeze('${user.cardNumber}', ${user.frozen})">${user.frozen ? "Aktif Et" : "Dondur"}</button>
-        <button onclick="deleteUser('${user.cardNumber}')">Sil</button>
-        <button onclick="toggleHistory(this, '${user.cardNumber}')">Geçmiş</button>
-      </td>
-    `;
-
-    const historyTr = document.createElement("tr");
-    historyTr.classList.add("history-row");
-    historyTr.style.display = "none";
-    historyTr.innerHTML = `<td colspan="5" class="history-cell">Yükleniyor...</td>`;
-
-    tbody.appendChild(tr);
-    tbody.appendChild(historyTr);
+  // Giriş yap fonksiyonu
+  loginBtn.addEventListener("click", () => {
+    const pw = document.getElementById("adminPassword").value.trim();
+    if(pw === ADMIN_PASSWORD) {
+      loginSection.style.display = "none";
+      adminPanel.style.display = "block";
+      loadUsers();
+      loginError.textContent = "";
+    } else {
+      loginError.textContent = "Hatalı şifre!";
+    }
   });
-}
 
-async function resetBalance(cardNumber) {
-  if (!confirm("Bakiyeyi sıfırlamak istiyor musunuz?")) return;
-  const res = await fetch("/api/admin/reset-balance", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cardNumber })
-  });
-  const data = await res.json();
-  if (data.success) {
-    showAlert("Bakiye sıfırlandı.");
-    fetchUsers();
-  } else {
-    showAlert(data.error || "Sıfırlama hatası", "error");
-  }
-}
-
-async function addBalance(cardNumber) {
-  const amount = prompt("Eklenecek tutarı girin:");
-  if (!amount || isNaN(amount) || amount <= 0) return showAlert("Geçersiz tutar", "error");
-
-  const res = await fetch("/api/admin/add-balance", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cardNumber, amount: parseFloat(amount) })
-  });
-  const data = await res.json();
-  if (data.success) {
-    showAlert("Bakiye eklendi.");
-    fetchUsers();
-  } else {
-    showAlert(data.error || "Ekleme hatası", "error");
-  }
-}
-
-async function toggleFreeze(cardNumber, frozen) {
-  const res = await fetch("/api/admin/toggle-freeze", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cardNumber, frozen: !frozen })
-  });
-  const data = await res.json();
-  if (data.success) {
-    showAlert(frozen ? "Hesap aktifleştirildi." : "Hesap donduruldu.");
-    fetchUsers();
-  } else {
-    showAlert(data.error || "İşlem hatası", "error");
-  }
-}
-
-async function deleteUser(cardNumber) {
-  if (!confirm("Bu kullanıcıyı silmek istiyor musunuz?")) return;
-  const res = await fetch("/api/admin/delete-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cardNumber })
-  });
-  const data = await res.json();
-  if (data.success) {
-    showAlert("Kullanıcı silindi.");
-    fetchUsers();
-  } else {
-    showAlert(data.error || "Silme hatası", "error");
-  }
-}
-
-async function toggleHistory(btn, cardNumber) {
-  const tr = btn.parentElement.parentElement;
-  const nextTr = tr.nextElementSibling;
-  const cell = nextTr.querySelector(".history-cell");
-
-  if (nextTr.style.display === "table-row") {
-    nextTr.style.display = "none";
-    return;
+  // Çıkış yap fonksiyonu
+  function logout() {
+    adminPanel.style.display = "none";
+    loginSection.style.display = "block";
+    document.getElementById("adminPassword").value = "";
   }
 
-  nextTr.style.display = "table-row";
-  cell.textContent = "Yükleniyor...";
+  // Kullanıcıları çek ve listele
+  async function loadUsers() {
+    try {
+      const res = await fetch("/api/users");
+      const users = await res.json();
+      renderUsers(users);
+    } catch {
+      showAlert("Kullanıcılar alınamadı!", "error");
+    }
+  }
 
-  try {
-    const res = await fetch("/api/admin/user-history", {
+  // Kullanıcıları tabloya yazdır
+  function renderUsers(users) {
+    const tbody = document.getElementById("usersBody");
+    tbody.innerHTML = "";
+
+    users.forEach(user => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user.name}</td>
+        <td>${user.cardNumber}</td>
+        <td>${user.balance.toFixed(2)}</td>
+        <td>${user.frozen ? "❄️ Dondurulmuş" : "🟢 Aktif"}</td>
+        <td>
+          <button class="action-btn" onclick="resetBalance('${user.cardNumber}')">Sıfırla</button>
+          <button class="action-btn" onclick="addBalance('${user.cardNumber}')">+Bakiye</button>
+          <button class="action-btn" onclick="toggleFreeze('${user.cardNumber}', ${user.frozen})">${user.frozen ? "Aktif Et" : "Dondur"}</button>
+          <button class="action-btn delete-btn" onclick="deleteUser('${user.cardNumber}')">Sil</button>
+          <button class="action-btn history-btn" onclick="showHistory('${user.cardNumber}')">Geçmiş</button>
+          <button class="action-btn info-btn" onclick="showInfo(${JSON.stringify(user).replace(/"/g, '&quot;')})">Bilgi</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // API çağrıları ve işlemler
+  async function resetBalance(cardNumber) {
+    if (!confirm("Bakiyeyi sıfırlamak istediğinize emin misiniz?")) return;
+    const res = await fetch("/api/admin/reset-balance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cardNumber })
     });
     const data = await res.json();
-    if (!data.history || data.history.length === 0) {
-      cell.innerHTML = "<i>İşlem bulunamadı.</i>";
+    if (data.success) {
+      showAlert("Bakiye sıfırlandı.");
+      loadUsers();
+    } else {
+      showAlert(data.error || "Sıfırlama hatası", "error");
+    }
+  }
+
+  async function addBalance(cardNumber) {
+    const amountStr = prompt("Eklenecek tutarı girin:");
+    const amount = parseFloat(amountStr);
+    if (!amountStr || isNaN(amount) || amount <= 0) {
+      showAlert("Geçersiz tutar", "error");
       return;
     }
-    const html = data.history.map(tx => {
-      return `<div>${tx.date} - ${tx.type} ${tx.amount}₺ ${tx.to ? `→ ${tx.to}` : tx.from ? `← ${tx.from}` : ""}</div>`;
-    }).join("");
-    cell.innerHTML = html;
-  } catch {
-    cell.textContent = "İşlem alınamadı.";
+    const res = await fetch("/api/admin/add-balance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cardNumber, amount })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert("Bakiye eklendi.");
+      loadUsers();
+    } else {
+      showAlert(data.error || "Ekleme hatası", "error");
+    }
   }
-}
 
-fetchUsers();
+  async function toggleFreeze(cardNumber, frozen) {
+    const res = await fetch("/api/admin/toggle-freeze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cardNumber, frozen: !frozen })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert(frozen ? "Hesap aktifleştirildi." : "Hesap donduruldu.");
+      loadUsers();
+    } else {
+      showAlert(data.error || "İşlem hatası", "error");
+    }
+  }
+
+  async function deleteUser(cardNumber) {
+    if (!confirm("Bu kullanıcıyı silmek istediğinize emin misiniz?")) return;
+    const res = await fetch("/api/admin/delete-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cardNumber })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert("Kullanıcı silindi.");
+      loadUsers();
+    } else {
+      showAlert(data.error || "Silme hatası", "error");
+    }
+  }
+
+  // Geçmiş modal açma
+  async function showHistory(cardNumber) {
+    try {
+      modalTitle.textContent = "İşlem Geçmişi";
+      modalContent.textContent = "Yükleniyor...";
+      modalOverlay.style.display = "flex";
+      const res = await fetch("/api/admin/user-history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardNumber })
+      });
+      const data = await res.json();
+      if (!data.history || data.history.length === 0) {
+        modalContent.innerHTML = "<i>İşlem bulunamadı.</i>";
+        return;
+      }
+      modalContent.innerHTML = data.history
+        .map(tx => {
+          const noteText = tx.note && tx.note.trim() !== "" ? `<br><small style="color:#ccc; font-style: italic;">Not: ${tx.note}</small>` : "";
+          return `<div>
+            ${tx.date} - ${tx.type} ${tx.amount}₺ 
+            ${tx.to ? `→ ${tx.to}` : tx.from ? `← ${tx.from}` : ""}
+            ${noteText}
+          </div>`;
+        })
+        .join("");
+    } catch {
+      modalContent.textContent = "İşlem alınamadı.";
+    }
+  }
+
+  // Bilgi modal açma
+  function showInfo(user) {
+    modalTitle.textContent = "Kullanıcı Bilgileri";
+    modalContent.innerHTML = `
+      <div><strong>İsim:</strong> ${user.name}</div>
+      <div><strong>Kart Numarası:</strong> ${user.cardNumber}</div>
+      <div><strong>IP Adresi:</strong> ${user.ip || "Bilinmiyor"}</div>
+      <div><strong>Kurulum Tarihi:</strong> ${user.createdAt || "Bilinmiyor"}</div>
+      <div><strong>PIN (Şifre):</strong> ${user.password || "Gizli"}</div>
+    `;
+    modalOverlay.style.display = "flex";
+  }
+
+  modalClose.addEventListener("click", () => {
+    modalOverlay.style.display = "none";
+  });
+
+  // Sayfa yüklendiğinde giriş ekranı göster
+  loginSection.style.display = "block";
+  adminPanel.style.display = "none";
+
 </script>
 
 </body>

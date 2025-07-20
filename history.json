@@ -1,1 +1,60 @@
-{}
+{
+  "795646805": [
+    {
+      "type": "GÖNDERİLDİ",
+      "amount": -10000,
+      "to": "Berra Özata",
+      "date": "19.07.2025 23:08:55"
+    },
+    {
+      "type": "GÖNDERİLDİ",
+      "amount": -2000,
+      "to": "Berra Özata",
+      "date": "19.07.2025 23:26:13",
+      "note": ""
+    },
+    {
+      "type": "GÖNDERİLDİ",
+      "amount": -100,
+      "to": "Berra Özata",
+      "date": "19.07.2025 23:33:18",
+      "note": ""
+    },
+    {
+      "type": "GÖNDERİLDİ",
+      "amount": -0.25,
+      "to": "Berra Özata",
+      "date": "19.07.2025 23:39:42",
+      "note": "Altuğ sana bunu atmazdı oe"
+    }
+  ],
+  "950549637": [
+    {
+      "type": "ALINDI",
+      "amount": 10000,
+      "from": "Akın Talha",
+      "date": "19.07.2025 23:08:55"
+    },
+    {
+      "type": "ALINDI",
+      "amount": 2000,
+      "from": "Akın Talha",
+      "date": "19.07.2025 23:26:13",
+      "note": ""
+    },
+    {
+      "type": "ALINDI",
+      "amount": 100,
+      "from": "Akın Talha",
+      "date": "19.07.2025 23:33:18",
+      "note": ""
+    },
+    {
+      "type": "ALINDI",
+      "amount": 0.25,
+      "from": "Akın Talha",
+      "date": "19.07.2025 23:39:42",
+      "note": "Altuğ sana bunu atmazdı oe"
+    }
+  ]
+}

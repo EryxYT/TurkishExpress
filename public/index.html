@@ -9,64 +9,148 @@
       box-sizing: border-box;
       font-family: "Times New Roman", serif;
     }
+
+    /* Temalar için data-theme attribute'u ile renkler */
+
+    body[data-theme="dark"] {
+      background: #000;
+      color: white;
+    }
+    body[data-theme="light"] {
+      background: #fff;
+      color: black;
+    }
+
+    body[data-theme="dark"] .container {
+      background: #111;
+    }
+    body[data-theme="light"] .container {
+      background: #f5f5f5;
+    }
+
+    body[data-theme="dark"] input,
+    body[data-theme="dark"] textarea {
+      background: #222;
+      color: white;
+      border: none;
+    }
+    body[data-theme="light"] input,
+    body[data-theme="light"] textarea {
+      background: #eee;
+      color: black;
+      border: 1px solid #ccc;
+    }
+
+    body[data-theme="dark"] button {
+      background: #FFD700;
+      color: black;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    body[data-theme="light"] button {
+      background: #ffa500;
+      color: black;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    body[data-theme="dark"] button:hover:not(:disabled) {
+      background: #e6c200;
+    }
+    body[data-theme="light"] button:hover:not(:disabled) {
+      background: #cc8400;
+    }
+
+    body[data-theme="dark"] button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    body[data-theme="light"] button:disabled {
+      background: #bbb;
+      cursor: not-allowed;
+    }
+
+    body[data-theme="dark"] h1.logo,
+    body[data-theme="dark"] .subtitle,
+    body[data-theme="dark"] #status,
+    body[data-theme="dark"] #cardInfo,
+    body[data-theme="dark"] .morning-mode-toggle,
+    body[data-theme="dark"] .user-info,
+    body[data-theme="dark"] .info-small,
+    body[data-theme="dark"] footer {
+      color: #FFD700;
+      user-select: none;
+    }
+
+    body[data-theme="light"] h1.logo,
+    body[data-theme="light"] .subtitle,
+    body[data-theme="light"] #status,
+    body[data-theme="light"] #cardInfo,
+    body[data-theme="light"] .morning-mode-toggle,
+    body[data-theme="light"] .user-info,
+    body[data-theme="light"] .info-small,
+    body[data-theme="light"] footer {
+      color: #b8860b;
+      user-select: none;
+    }
+
+    body[data-theme="dark"] ul {
+      border-top: 1px solid #444;
+      color: white;
+    }
+    body[data-theme="light"] ul {
+      border-top: 1px solid #ccc;
+      color: black;
+    }
+
+    /* Diğer stiller */
     body {
       margin: 0;
       padding: 20px;
-      background: #000; /* Siyah arka plan */
-      color: white;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      transition: background 0.4s ease, color 0.4s ease;
     }
+
     h1.logo {
-      color: #FFD700; /* Altın */
       font-size: 2.8rem;
       text-align: center;
-      margin: 0;
-      margin-bottom: 4px;
-      user-select: none;
+      margin: 0 0 4px;
     }
+
     .subtitle {
-      color: #FFD700;
       font-size: 1rem;
       text-align: center;
       margin-bottom: 20px;
-      user-select: none;
     }
-    input, button {
+
+    input, button, textarea {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
       border-radius: 6px;
-      border: none;
       font-size: 1rem;
+      transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
     }
-    input {
-      background: #222;
-      color: white;
-    }
-    button {
-      background: #FFD700;
-      color: black;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      border: none;
-    }
-    button:hover {
-      background: #e6c200;
-    }
+
     .container {
       max-width: 420px;
       margin: auto;
-      background: #111;
       padding: 25px 30px;
       border-radius: 12px;
       flex-grow: 1;
+      transition: background 0.4s ease;
     }
+
     #dashboard {
       display: none;
     }
+
     ul {
       list-style: none;
       padding-left: 0;
@@ -74,31 +158,91 @@
       max-height: 160px;
       overflow-y: auto;
       margin-top: 10px;
-      border-top: 1px solid #444;
       padding-top: 8px;
+      transition: color 0.4s ease, border-color 0.4s ease;
     }
+
     ul li {
       margin-bottom: 6px;
     }
+
     footer {
       text-align: center;
-      color: #666;
       font-size: 12px;
       padding: 18px 0 6px;
       user-select: none;
+      transition: color 0.4s ease;
     }
+
     #status, #cardInfo {
       text-align: center;
       margin-top: 12px;
       font-style: italic;
       font-size: 1.1rem;
-      color: #FFD700;
-      user-select: none;
     }
+
     #cardInfo {
       font-weight: 700;
       font-style: normal;
     }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .morning-mode-toggle {
+      cursor: pointer;
+      user-select: none;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.9rem;
+      border: 1px solid;
+      transition: background 0.3s ease, color 0.3s ease;
+      margin-left: auto;
+    }
+    body[data-theme="dark"] .morning-mode-toggle {
+      background: #222;
+      color: #FFD700;
+      border-color: #FFD700;
+    }
+    body[data-theme="dark"] .morning-mode-toggle.active {
+      background: #FFD700;
+      color: black;
+    }
+    body[data-theme="light"] .morning-mode-toggle {
+      background: #eee;
+      color: #b8860b;
+      border-color: #b8860b;
+    }
+    body[data-theme="light"] .morning-mode-toggle.active {
+      background: #b8860b;
+      color: white;
+    }
+
+    .danger-button {
+      background: #b22222;
+      color: white;
+      font-weight: 700;
+      margin-top: 15px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .danger-button:hover {
+      background: #8b1a1a;
+    }
+
+    .info-small {
+      font-size: 0.85rem;
+      margin-top: -6px;
+      margin-bottom: 12px;
+      user-select: none;
+    }
+
     @media (max-width: 480px) {
       .container {
         width: 90%;
@@ -107,10 +251,10 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
   <div class="container">
     <h1 class="logo">Turkish Express</h1>
-    <div class="subtitle">Altınd TBL Resmi Sponsoru</div>
+    <div class="subtitle"> TBL Resmi Sponsoru</div>
 
     <div id="register">
       <h3>Kart Talep Et</h3>
@@ -130,17 +274,35 @@
     </div>
 
     <div id="dashboard">
-      <h3>👤 <span id="user-name"></span></h3>
+      <div class="user-info">
+        👤 <span id="user-name"></span> <span id="morning-mode-status" title="Tema"></span>
+        <button id="morningModeToggle" class="morning-mode-toggle" title="Tema değiştir">🌙 Karanlık Mod</button>
+      </div>
       <p>💰 Bakiye: <span id="user-balance"></span>₺</p>
 
       <h4>💸 Para Gönder</h4>
       <input id="to-username" placeholder="Alıcının Kullanıcı Adı" autocomplete="off" />
       <input id="send-amount" placeholder="Tutar" type="number" min="1" />
+      <textarea id="send-note" placeholder="Not bırakabilirsiniz (isteğe bağlı)" rows="2" style="width:100%; margin: 8px 0; border-radius:6px; padding:8px;"></textarea>
       <button id="sendMoneyBtn">Gönder</button>
       <p id="send-result" style="color:#f33;"></p>
 
       <h4>📜 İşlem Geçmişi</h4>
       <ul id="history-list"></ul>
+
+      <hr style="margin: 20px 0; border-color: #444;" />
+
+      <h4>⚙️ Hesap Ayarları</h4>
+      <input id="new-name" placeholder="Yeni İsim (en fazla 2 kere değişebilir)" autocomplete="off" />
+      <div class="info-small" id="name-change-info"></div>
+
+      <input id="new-pin" placeholder="Yeni 4 Haneli Şifre" maxlength="4" autocomplete="off" />
+      <input id="confirm-pin" placeholder="Yeni Şifre Onayı" maxlength="4" autocomplete="off" />
+      <button id="updateAccountBtn">Hesap Bilgilerini Güncelle</button>
+      <p id="update-result" style="color:#f33;"></p>
+
+      <button id="deleteAccountBtn" class="danger-button">⚠️ Hesabı Sil</button>
+      <p id="delete-result" style="color:#f33;"></p>
     </div>
   </div>
 
@@ -150,16 +312,52 @@
     const requestCardBtn = document.getElementById("requestCardBtn");
     const loginBtn = document.getElementById("loginBtn");
     const sendMoneyBtn = document.getElementById("sendMoneyBtn");
+    const updateAccountBtn = document.getElementById("updateAccountBtn");
+    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+    const morningModeToggle = document.getElementById("morningModeToggle");
 
     const statusDiv = document.getElementById("status");
     const cardInfoDiv = document.getElementById("cardInfo");
     const loginResult = document.getElementById("login-result");
     const sendResult = document.getElementById("send-result");
+    const updateResult = document.getElementById("update-result");
+    const deleteResult = document.getElementById("delete-result");
+    const nameChangeInfo = document.getElementById("name-change-info");
+    const morningModeStatus = document.getElementById("morning-mode-status");
 
     let currentCard = "";
     let currentUsername = "";
+    let nameChangeCount = 0;
+    let currentTheme = "dark"; // default tema
 
-    // Kart talep et - 5 saniyelik animasyon ve kart numarası gösterimi
+    // Tema ayarlarını body attribute ile uygula ve butonu güncelle
+    function setTheme(theme) {
+      currentTheme = theme;
+      document.body.setAttribute("data-theme", theme);
+      updateMorningModeToggle();
+      // Eğer backend'e kaydetmek istersen buraya fetch ekleyebilirsin
+      /*
+      fetch("/api/set-theme", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ cardNumber: currentCard, theme }),
+      });
+      */
+    }
+
+    function updateMorningModeToggle() {
+      if (currentTheme === "dark") {
+        morningModeToggle.textContent = "🌙 Karanlık Mod";
+        morningModeToggle.classList.remove("active");
+        morningModeToggle.title = "Tema değiştir: Açık Mod";
+      } else {
+        morningModeToggle.textContent = "☀️ Açık Mod";
+        morningModeToggle.classList.add("active");
+        morningModeToggle.title = "Tema değiştir: Karanlık Mod";
+      }
+    }
+
+    // Kart talep et - animasyon ve kart numarası gösterimi
     requestCardBtn.addEventListener("click", () => {
       const name = document.getElementById("reg-name").value.trim();
       const pin = document.getElementById("reg-pin").value.trim();
@@ -232,19 +430,23 @@
         .then((data) => {
           if (data.success) {
             if (data.admin) {
-              // Admin ise admin paneline yönlendir
               window.location.href = "/admin";
               return;
             }
-
             currentCard = data.cardNumber;
             currentUsername = data.name;
+            nameChangeCount = data.nameChangeCount || 0;
+            // Eğer backendden tema bilgisi gelirse onu uygula, yoksa default
+            setTheme(data.theme || "dark");
+
             document.getElementById("register").style.display = "none";
             document.getElementById("login").style.display = "none";
             document.getElementById("dashboard").style.display = "block";
-            document.getElementById("user-name").textContent = currentUsername;
+            updateUserInfoDisplay();
             document.getElementById("user-balance").textContent = data.balance;
             renderHistory(data.history);
+
+            updateNameChangeUI();
           } else {
             loginResult.textContent = data.error || "Hata oluştu.";
           }
@@ -254,69 +456,169 @@
         });
     });
 
-    // Para gönderme - kullanıcı adı ile
+    function updateUserInfoDisplay() {
+      document.getElementById("user-name").textContent = currentUsername;
+    }
+
+    function updateNameChangeUI() {
+      if(nameChangeCount >= 2){
+        document.getElementById("new-name").disabled = true;
+        nameChangeInfo.textContent = "İsim değişikliği hakkınızı kullandınız.";
+      } else {
+        document.getElementById("new-name").disabled = false;
+        nameChangeInfo.textContent = `İsim değiştirme hakkınız: ${2 - nameChangeCount}`;
+      }
+    }
+
+    // Para gönderme
     sendMoneyBtn.addEventListener("click", () => {
-      const toUsername = document.getElementById("to-username").value.trim();
-      const amount = parseFloat(document.getElementById("send-amount").value);
-      sendResult.style.color = "#f33";
+      const toUser = document.getElementById("to-username").value.trim();
+      const amount = Number(document.getElementById("send-amount").value);
+      const note = document.getElementById("send-note").value.trim();
+
+      if (!toUser || isNaN(amount) || amount < 1) {
+        sendResult.textContent = "Geçerli alıcı ve tutar giriniz.";
+        return;
+      }
       sendResult.textContent = "";
 
-      if (!toUsername) {
-        sendResult.textContent = "Alıcının kullanıcı adını girin.";
-        return;
-      }
-      if (isNaN(amount) || amount <= 0) {
-        sendResult.textContent = "Geçerli bir tutar girin.";
-        return;
-      }
+      sendMoneyBtn.disabled = true;
 
-      fetch("/api/send-money-by-name", {
+      fetch("/api/send-money", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fromCard: currentCard,
-          toUsername,
+          toUser,
           amount,
+          note,
         }),
       })
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
-            sendResult.style.color = "limegreen";
-            sendResult.textContent = "✅ Para gönderildi.";
+            sendResult.style.color = "green";
+            sendResult.textContent = "Para başarıyla gönderildi.";
             document.getElementById("user-balance").textContent = data.newBalance;
             renderHistory(data.history);
-            document.getElementById("to-username").value = "";
-            document.getElementById("send-amount").value = "";
           } else {
-            sendResult.textContent = data.error || "Gönderme hatası.";
+            sendResult.style.color = "#f33";
+            sendResult.textContent = data.error || "Gönderme başarısız.";
           }
+          sendMoneyBtn.disabled = false;
         })
         .catch(() => {
+          sendResult.style.color = "#f33";
           sendResult.textContent = "Sunucu hatası.";
+          sendMoneyBtn.disabled = false;
         });
     });
 
-    // İşlem geçmişini göster
-    function renderHistory(history) {
-      const list = document.getElementById("history-list");
-      list.innerHTML = "";
-      if (!history || history.length === 0) {
-        list.innerHTML = "<li>İşlem geçmişi yok.</li>";
+    // Hesap güncelleme
+    updateAccountBtn.addEventListener("click", () => {
+      const newName = document.getElementById("new-name").value.trim();
+      const newPin = document.getElementById("new-pin").value.trim();
+      const confirmPin = document.getElementById("confirm-pin").value.trim();
+
+      updateResult.textContent = "";
+
+      if (newName && nameChangeCount >= 2) {
+        updateResult.textContent = "İsim değiştirme hakkınız kalmadı.";
         return;
       }
-      history
-        .slice()
-        .reverse()
-        .forEach((item) => {
-          let txt = `${item.date} | ${item.type} ${item.amount}₺`;
-          if (item.to) txt += ` → ${item.to}`;
-          else if (item.from) txt += ` ← ${item.from}`;
-          const li = document.createElement("li");
-          li.textContent = txt;
-          list.appendChild(li);
+      if (newPin && newPin.length !== 4) {
+        updateResult.textContent = "Yeni şifre 4 haneli olmalı.";
+        return;
+      }
+      if (newPin && newPin !== confirmPin) {
+        updateResult.textContent = "Şifreler uyuşmuyor.";
+        return;
+      }
+
+      const bodyData = { cardNumber: currentCard };
+      if (newName) bodyData.newName = newName;
+      if (newPin) bodyData.newPin = newPin;
+
+      updateAccountBtn.disabled = true;
+
+      fetch("/api/update-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bodyData),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            updateResult.style.color = "green";
+            updateResult.textContent = "Hesap başarıyla güncellendi.";
+            if (newName) {
+              currentUsername = newName;
+              nameChangeCount++;
+              updateUserInfoDisplay();
+              updateNameChangeUI();
+            }
+          } else {
+            updateResult.style.color = "#f33";
+            updateResult.textContent = data.error || "Güncelleme başarısız.";
+          }
+          updateAccountBtn.disabled = false;
+        })
+        .catch(() => {
+          updateResult.style.color = "#f33";
+          updateResult.textContent = "Sunucu hatası.";
+          updateAccountBtn.disabled = false;
         });
+    });
+
+    // Hesap silme
+    deleteAccountBtn.addEventListener("click", () => {
+      if (!confirm("Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.")) return;
+
+      deleteResult.textContent = "";
+      deleteAccountBtn.disabled = true;
+
+      fetch("/api/delete-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardNumber: currentCard }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            alert("Hesabınız silindi. Sayfa yenileniyor.");
+            location.reload();
+          } else {
+            deleteResult.textContent = data.error || "Silme işlemi başarısız.";
+          }
+          deleteAccountBtn.disabled = false;
+        })
+        .catch(() => {
+          deleteResult.textContent = "Sunucu hatası.";
+          deleteAccountBtn.disabled = false;
+        });
+    });
+
+    // İşlem geçmişini listele
+    function renderHistory(history) {
+      const historyList = document.getElementById("history-list");
+      historyList.innerHTML = "";
+      if (!history || history.length === 0) {
+        historyList.innerHTML = "<li>İşlem geçmişi boş.</li>";
+        return;
+      }
+      history.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.date} - ${item.description} - ${item.amount}₺`;
+        historyList.appendChild(li);
+      });
     }
+
+    // Tema değiştirme butonu
+    morningModeToggle.addEventListener("click", () => {
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      setTheme(newTheme);
+    });
+
   </script>
 </body>
 </html>

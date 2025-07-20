@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>İşlem Geçmişi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .history-entry {
+      background-color: white;
+      border-left: 4px solid #4CAF50;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 600px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .entry-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .entry-details {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>İşlem Geçmişi</h1>
+  <div id="historyList">Yükleniyor...</div>
+
+  <script>
+    fetch('/api/history')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('historyList');
+        container.innerHTML = '';
+        if (data.length === 0) {
+          container.textContent = "Henüz işlem yok.";
+          return;
+        }
+        data.reverse().forEach(entry => {
+          const div = document.createElement('div');
+          div.className = 'history-entry';
+          div.innerHTML = `
+            <div class="entry-title">${entry.type || 'İşlem'} - ${entry.date}</div>
+            <div class="entry-details">
+              <strong>Kimden:</strong> ${entry.sender || 'Bilinmiyor'}<br>
+              <strong>Kime:</strong> ${entry.receiver || 'Bilinmiyor'}<br>
+              <strong>Miktar:</strong> ${entry.amount || 0}₺<br>
+              ${entry.note ? `<strong>Not:</strong> ${entry.note}<br>` : ''}
+              <small>IP: ${entry.ip || 'Gizli'}</small>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(() => {
+        document.getElementById('historyList').textContent = "Veriler alınamadı.";
+      });
+  </script>
+</body>
+</html>
